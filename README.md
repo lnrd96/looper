@@ -1,40 +1,41 @@
-# JUCE CMake Repo Prototype
-A prototype to model a way to create an entire repo using JUCE 6 and CMake.
+# Looper
+A smart looper pedal as VST plugin.
 
-This is inspired by a desire to keep the environment setting of my projects to minimum,
-making sure the environment is identical for every developer/machine.
+## Outline
 
-The main concept is to set all the different variables (where JUCE is, custom modules, etc) 
-in the top CMakeLists.txt, then add all your projects with very little setup time.
+## Project Vision and Mission
+### Vision
 
-Another important concept is to share all 'related' projects under the same configuration,
-which I prefer, since it encourages code-sharing and build system settings sharing.
-In some of the examples I added minimal usages of juce-style modules to illustrate how that
-can be done.
+During the recent years lots of musicians switched from the analog world to the digital world.
+For instance, many guitar players use models of amplifiers and pedals instead of their
+real world counter parts. The same holds for keyboard players as the digital approach offers a manifold selection of realistic models of the most acknowledged hardware. Some musicians may prefer the sound and feel of analog gear, while others may find that digital technology offers greater flexibility and versatility.
 
-To build, all you have to do is load this project in your favorite IDE 
-(CLion/Visual Studio/VSCode/etc) 
-and click 'build' for one of the targets (templates, JUCE examples, Projucer, etc).
+[Looping](https://youtu.be/oc0yCiCvy6Y?t=144) is often used as a creative tool in music production, allowing a musician to build up layers of sound and create complex compositions by layering loops on top of each other. It can also be used live, in performance, to create a backing track or to improvise over a repeating groove.
 
-You can also generate a project for an IDE by using (Mac):
-```
-cmake -G Xcode -B build
-```
-Windows:
-```
-cmake -G "Visual Studio 16 2022" -B build
-```
+However, aside from different, and quite complex, live performance options in some DAWs or inside specific plugins, there seems to be no simple and universal solution to transfer a simple looper pedal to the digital world. Basic analog looper pedals are most commonly operated on using only one button. However, there seems to be no software solution that enable looping using only one MIDI foot step.
 
-For package management, I'm using the amazing CPM.cmake:
-#https://github.com/TheLartians/CPM.cmake
-It automatically fetches JUCE from git, but you can also set the variable:
-CPM_JUCE_SOURCE to point it to a local folder, by using:
-``-DCPM_JUCE_SOURCE="Path_To_JUCE"``
-when invoking CMake
+Thus the vision of this project is to provide a universally applicable looper VST plugin that can be
+used with only one foot step. It is supposed to be placed on the master channel of the DAW such that
+any performances whether it is vocals, MIDI drum pads, guitar or keys is captured.
 
-JUCE can be found here:
-#https://github.com/juce-framework/JUCE
+### Mission
+To realize the key point, simple usage, the operation is implemented using patterns of button presses of the single foot step. For instance pressing once starts recording, pressing twice pauses and holding the button resets the recorded audio. 
 
-License:
-Anything from me in this repo is completely free to use for any purpose. 
-However, please check the licenses for CPM and JUCE as described in their repo. 
+### Technologies
+To simplify the development and deployment the [JUCE](https://juce.com/) framework is used.
+To further facilitate deployment and getting started as a contributor [CMAKE](https://cmake.org/) is used to build the application. It enables building on
+all common platforms as well as deploying to them.
+
+### Post-Release Features
+- Audio export
+- BPM detection
+- Audio normalising and automatic loudness improving
+
+## Build instructions
+TODO
+
+## License
+TODO
+
+## Credits
+The cmake build environment is based on the [prototype repository](https://github.com/eyalamirmusic/JUCECmakeRepoPrototype) by [eyalamirmusic](https://github.com/eyalamirmusic/JUCECmakeRepoPrototype/commits?author=eyalamirmusic).
