@@ -9,11 +9,9 @@ BACKEND
 
 
 /**
- * @brief Constructor
- * 
+ * @brief Constructor is implicit class declaration.
  */
-PluginProcessor::PluginProcessor()
-{
+PluginProcessor::PluginProcessor() {
     parameters.add(*this);
 }
 
@@ -24,16 +22,13 @@ PluginProcessor::PluginProcessor()
  * @param midiMessages object that contains any MIDI messages that have been received by the plugin
  */
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
-                                   juce::MidiBuffer& midiBuffer)
-
-{
-    // juce::ignoreUnused(midiBuffer);
+                                   juce::MidiBuffer& midiBuffer) {
+    juce::ignoreUnused(midiBuffer);
 
     if (parameters.enable->get())
         audioBuffer.applyGain(parameters.gain->get());
     else
         audioBuffer.clear();
-
 }
 
 /**
@@ -41,8 +36,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
  * 
  * @return juce::AudioProcessorEditor* 
  */
-juce::AudioProcessorEditor* PluginProcessor::createEditor()
-{
+juce::AudioProcessorEditor* PluginProcessor::createEditor() {
     return new PluginEditor(*this);
 }
 
@@ -51,47 +45,39 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor()
  * 
  * @param destData The memoryblock to store the serialized data.
  */
-void PluginProcessor::getStateInformation(juce::MemoryBlock& destData)
-{
-    //Serializes your parameters, and any other potential data into an XML:
-
+void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
+    // Serializes parameters, and any other potential data into an XML:
     juce::ValueTree params("Params");
-
     for (auto& param: getParameters())
     {
         juce::ValueTree paramTree(PluginHelpers::getParamID(param));
         paramTree.setProperty("Value", param->getValue(), nullptr);
         params.appendChild(paramTree, nullptr);
     }
-
     juce::ValueTree pluginPreset("MyPlugin");
     pluginPreset.appendChild(params, nullptr);
-    //This a good place to add any non-parameters to your preset
-
+    // This a good place to add any non-parameters to your preset
     copyXmlToBinary(*pluginPreset.createXml(), destData);
 }
 
-void PluginProcessor::setStateInformation(const void* data,
-                                                          int sizeInBytes)
-{
-    //Loads your parameters, and any other potential data from an XML:
-
+/**
+ * @brief Set application state from XML.
+ * 
+ * @param data location od data.
+ * @param sizeInBytes size of data.
+ */
+void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
     auto xml = getXmlFromBinary(data, sizeInBytes);
-
-    if (xml != nullptr)
-    {
+    if (xml != nullptr) {
         auto preset = juce::ValueTree::fromXml(*xml);
         auto params = preset.getChildWithName("Params");
 
-        for (auto& param: getParameters())
-        {
+        for (auto& param: getParameters()) {
             auto paramTree = params.getChildWithName(PluginHelpers::getParamID(param));
-
             if (paramTree.isValid())
                 param->setValueNotifyingHost(paramTree["Value"]);
         }
-
-        //Load your non-parameter data now
+        // Load your non-parameter data now
     }
 }
 
@@ -103,7 +89,6 @@ void PluginProcessor::setStateInformation(const void* data,
  * @return juce::AudioProcessor* 
  */
 
-juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
-{
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
     return new PluginProcessor();
 }
