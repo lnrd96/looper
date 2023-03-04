@@ -1,17 +1,29 @@
 #pragma once
 
-#include "LooperProcessor.h"
 #include "States.h"
+#include "LooperProcessor.h"
 
+class LooperProcessor {
+public:
+    /// @brief  Initializes the member variables state using member initializer list.
+    LooperProcessor() : state(ApplicationState::INIT) {}
 
-/**
- * @brief Construct a new Looper Processor:: Looper Processor object
- * 
- */
-LooperProcessor::LooperProcessor() {
-    
-}
+    void setApplicationState(juce::MidiBuffer& midiBuffer) {
+        // TODO: decode midiBuffer.
+    }
 
-void setApplicationState(juce::MidiBuffer& midiBuffer) {
-    // TODO: decode midiBuffer.
-}
+    void processAudio(juce::AudioBuffer<float>& audioBuffer) {
+        if (this->state == ApplicationState::INIT){
+
+        } else if (this->state == ApplicationState::RECORD){
+
+        } else if (this->state == ApplicationState::PLAYBACK){
+
+        } else if (this->state == ApplicationState::PAUSE){
+
+        }
+    }
+
+private:
+    ApplicationState state;
+};
