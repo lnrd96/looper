@@ -21,7 +21,8 @@ juce_add_plugin("${BaseTargetName}"
 target_sources(${BaseTargetName} PRIVATE
         Source/PluginProcessor.cpp
         Source/PluginEditor.cpp
-        Source/LooperProcessor.cpp)
+        Source/LooperProcessor.cpp
+        Source/AudioMemory.cpp)
 
 target_compile_definitions(${BaseTargetName}
         PUBLIC
