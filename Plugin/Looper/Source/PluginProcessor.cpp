@@ -1,4 +1,5 @@
 #include "PluginProcessor.h"
+#include "LooperProcessor.h"
 #include "PluginEditor.h"
 
 /*
@@ -7,11 +8,11 @@ BACKEND
 
 */
 
-
 /**
  * @brief Constructor is implicit class declaration.
  */
 PluginProcessor::PluginProcessor() {
+    // initializes parameters variable and add this object to parameter tree
     parameters.add(*this);
 }
 
@@ -24,6 +25,12 @@ PluginProcessor::PluginProcessor() {
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
                                    juce::MidiBuffer& midiBuffer) {
     juce::ignoreUnused(midiBuffer);
+    
+    // check for midi and set the state of the looper
+    looperProcessor.setApplicationState(midiBuffer);
+    
+    // delegate audio processing to LooperProcessor class
+    looperProcessor.processAudio(audioBuffer);
 
     if (parameters.enable->get())
         audioBuffer.applyGain(parameters.gain->get());
@@ -41,7 +48,7 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor() {
 }
 
 /**
- * @brief The createEditor method is called by the host DAW to create the GUI of the plugin. 
+ * @brief 
  * 
  * @param destData The memoryblock to store the serialized data.
  */
@@ -63,7 +70,7 @@ void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
 /**
  * @brief Set application state from XML.
  * 
- * @param data location od data.
+ * @param data location of data.
  * @param sizeInBytes size of data.
  */
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
@@ -92,3 +99,5 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter() {
     return new PluginProcessor();
 }
+
+
