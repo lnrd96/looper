@@ -25,6 +25,7 @@ To simplify the development and deployment the [JUCE](https://juce.com/) framewo
 To further facilitate deployment and getting started as a contributor [CMAKE](https://cmake.org/) is used to build the application. JUCE enables building on all common platforms as well as deploying to them.
 
 ### Roadmap
+TODO
 
 ### Release Features
 The features of the first release include the ability to assign a MIDI command to the application and to perform looping with it.
@@ -35,7 +36,12 @@ The features of the first release include the ability to assign a MIDI command t
 - Audio normalising and automatic loudness improving
 
 ## Build instructions
-TODO
+Usual build using cmake, working directory should be root of this repo.
+`mkdir build`
+`cd build`
+`cmake --`
+`cmake --build . `
+Executables will be at `build/Plugin/Looper/Looper_artefacts/`
 
 ## License
 TODO
