@@ -7,8 +7,7 @@ FRONTEND
 
 */
 
-PluginEditor::PluginEditor(
-    PluginProcessor& p)
+PluginEditor::PluginEditor(PluginProcessor& p)
     : AudioProcessorEditor(&p)
 {
     addAndMakeVisible(editor);

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "PluginProcessor.h"
 
 class PluginEditor : public juce::AudioProcessorEditor

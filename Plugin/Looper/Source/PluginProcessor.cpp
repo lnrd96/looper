@@ -1,5 +1,4 @@
 #include "PluginProcessor.h"
-#include "LooperProcessor.h"
 #include "PluginEditor.h"
 
 /*
@@ -11,10 +10,11 @@ BACKEND
 /**
  * @brief Constructor is implicit class declaration.
  */
-PluginProcessor::PluginProcessor() {
-    // initializes parameters variable and add this object to parameter tree
+PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels(), getBlockSize())
+{
     parameters.add(*this);
 }
+
 
 /**
  * @brief Method is called by the host DAW to process a block of audio data.

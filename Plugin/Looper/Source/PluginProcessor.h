@@ -3,7 +3,6 @@
 #include "Parameters.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "LooperProcessor.h"
-#include "PluginEditor.h"
 
 class PluginProcessor : public PluginHelpers::ProcessorBase {
 public:
