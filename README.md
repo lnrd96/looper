@@ -2,6 +2,16 @@
 A smart looper pedal as VST plugin.
 
 ## Outline
+- [Project Vision and Mission](#project-vision-and-mission)
+  - [Vision](#vision)
+  - [Mission](#mission)
+  - [Technologies](#technologies)
+  - [Roadmap](#roadmap)
+  - [Release Features](#release-features)
+  - [Post-Release Features](#post-release-features)
+- [Build instructions](#build-instructions)
+- [License](#license)
+- [Credits](#credits)
 
 ## Project Vision and Mission
 ### Vision
@@ -33,15 +43,18 @@ The features of the first release include the ability to assign a MIDI command t
 - A feasable UI
 - Audio export
 - BPM detection
+- Smart adaption of loop circle using beat detection
 - Audio normalising and automatic loudness improving
 
 ## Build instructions
 Usual build using cmake, working directory should be root of this repo.
-`mkdir build`
-`cd build`
-`cmake --`
-`cmake --build . `
-Executables will be at `build/Plugin/Looper/Looper_artefacts/`
+```cmake
+mkdir build
+cd build
+cmake .. 
+cmake --build .
+```
+Executables will be at `build/Plugin/Looper/Looper_artefacts/`.
 
 ## License
 TODO
