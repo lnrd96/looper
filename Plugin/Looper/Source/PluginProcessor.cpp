@@ -29,7 +29,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     // check for midi and set the state of the looper
     looperProcessor.setApplicationState(midiBuffer);
     
-    // delegate audio processing to LooperProcessor class
+    // delegate audio processing to LooperProcessor class by passing the reference
     looperProcessor.processAudio(audioBuffer);
 
     if (parameters.enable->get())
