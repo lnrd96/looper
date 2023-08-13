@@ -7,7 +7,8 @@
 
 class LooperProcessor {
 public:
-    explicit LooperProcessor(int nChannels, int bufferSize);
+    explicit LooperProcessor(int nChannels);
+    void setBufferSize(int bufferSize);
     void setApplicationState(juce::MidiBuffer& midiBuffer);
     ApplicationState getApplicationState();
     void processAudio(juce::AudioBuffer<float>& audioBuffer);

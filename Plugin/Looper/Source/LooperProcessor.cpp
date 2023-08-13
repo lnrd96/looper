@@ -5,12 +5,16 @@
  * @brief Constructor
  */
 
-LooperProcessor::LooperProcessor(int nChannels, int bufferSize)
-    : state(ApplicationState::INIT), audioMemory(nChannels, bufferSize)
+LooperProcessor::LooperProcessor(int nChannels)
+    : state(ApplicationState::INIT), audioMemory(nChannels)
 {}
 
 void LooperProcessor::setApplicationState(juce::MidiBuffer& midiBuffer) {
     // TODO: decode midiBuffer.
+}
+
+void LooperProcessor::setBufferSize(int bufferSize) {
+    audioMemory.setBufferSize(bufferSize);
 }
 
 ApplicationState LooperProcessor::getApplicationState() {

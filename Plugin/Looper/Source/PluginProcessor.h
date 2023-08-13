@@ -14,6 +14,7 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
 private:
+    int bufferSize;    
     Parameters parameters;
     LooperProcessor looperProcessor;
 };

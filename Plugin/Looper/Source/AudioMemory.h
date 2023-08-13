@@ -6,7 +6,7 @@
 class AudioMemory {
 
 public:
-    AudioMemory(int numChannels, int numSamples);
+    AudioMemory(int numChannels);
     
     juce::AudioBuffer<float>* getBufferPointerFromMemory();
     
@@ -15,6 +15,7 @@ public:
     void deleteMemory();
     void resetIndex();
     void incrementMemoryIndex();
+    void setBufferSize(int bufferSize);
 
 private:
     int nChannels;

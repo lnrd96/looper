@@ -10,8 +10,9 @@ BACKEND
 /**
  * @brief Constructor is implicit class declaration.
  */
-PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels(), getBlockSize())
+PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
 {
+    bufferSize = -1;
     parameters.add(*this);
 }
 
@@ -24,7 +25,16 @@ PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels(),
  */
 void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
                                    juce::MidiBuffer& midiBuffer) {
-    juce::ignoreUnused(midiBuffer);
+    // set buffer size and update it if it changed
+    if (bufferSize == -1) {  // first run
+        bufferSize = getBlockSize();
+        // forward bufferSize to audioMemory via looperProcessor
+        looperProcessor.setBufferSize(getBlockSize());
+    } else if (bufferSize != getBlockSize()) {
+        throw std::runtime_error("The Plugin does currently not support block size changes during runtime.");
+        // TODO: Reinitialize audioMemory as quick fix?
+        looperProcessor.setBufferSize(getBlockSize());
+    }
     
     // check for midi and set the state of the looper
     looperProcessor.setApplicationState(midiBuffer);

@@ -8,8 +8,8 @@ Class to store and handle the recorded audio.
 /**
  * @brief Constructor
  */
-AudioMemory::AudioMemory(int nChannels, int bufferSize)
-    : nChannels(nChannels), bufferSize(bufferSize), memoryIndex(0)
+AudioMemory::AudioMemory(int nChannels)
+    : nChannels(nChannels), memoryIndex(0)
 {}
 
 /// @brief Add the audio buffer to the current loop and combine it with
@@ -62,4 +62,9 @@ void AudioMemory::deleteMemory(){
 /// @brief Sets the memory index to zero.
 void AudioMemory::resetIndex(){
     this->memoryIndex = 0;
+}
+
+/// @brief Update the buffer size.
+void AudioMemory::setBufferSize(int bufferSize) {
+    this->bufferSize = bufferSize;
 }
