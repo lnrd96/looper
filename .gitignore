@@ -1,8 +1,10 @@
 *.user
+.prettierrc
 
 SDKs
 
 build
+*build*
 build-ios
 
 cmake-build-debug
