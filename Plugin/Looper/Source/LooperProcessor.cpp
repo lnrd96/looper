@@ -1,5 +1,9 @@
 #include "LooperProcessor.h"
+/*
 
+Class to handle the processing logic and state management.
+
+*/
 
 /**
  * @brief Constructor
@@ -11,6 +15,7 @@ LooperProcessor::LooperProcessor(int nChannels)
 
 void LooperProcessor::setApplicationState(juce::MidiBuffer& midiBuffer) {
     // TODO: decode midiBuffer.
+    notifyStateChange();
 }
 
 void LooperProcessor::setBufferSize(int bufferSize) {
@@ -19,6 +24,14 @@ void LooperProcessor::setBufferSize(int bufferSize) {
 
 ApplicationState LooperProcessor::getApplicationState() {
     return state;
+}
+
+void LooperProcessor::addStateChangeListener(StateChangeListener* listener) {
+    listeners.add(listener);
+}
+
+void LooperProcessor::removeStateChangeListener(StateChangeListener* listener) {
+    listeners.remove(listener);
 }
 
 /// @brief process current audio block
@@ -35,4 +48,10 @@ void LooperProcessor::processAudio(juce::AudioBuffer<float>& audioBuffer) {
     } else if (this->state == ApplicationState::PAUSE){
 
     }
+}
+
+void LooperProcessor::notifyStateChange() {
+    listeners.call([this](StateChangeListener& listener) {
+        listener.stateChanged(state);
+    });
 }

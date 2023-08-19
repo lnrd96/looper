@@ -33,7 +33,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     } else if (bufferSize != getBlockSize()) {
         throw std::runtime_error("The Plugin does currently not support block size changes during runtime.");
         // TODO: Reinitialize audioMemory as quick fix?
-        looperProcessor.setBufferSize(getBlockSize());
+        // looperProcessor.setBufferSize(getBlockSize());
     }
     
     // check for midi and set the state of the looper

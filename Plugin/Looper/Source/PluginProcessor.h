@@ -12,9 +12,9 @@ public:
     juce::AudioProcessorEditor* createEditor() override;
     void getStateInformation(juce::MemoryBlock& destData) override;
     void setStateInformation(const void* data, int sizeInBytes) override;
+    LooperProcessor looperProcessor;
 
 private:
-    int bufferSize;    
+    int bufferSize;
     Parameters parameters;
-    LooperProcessor looperProcessor;
 };

@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <juce_gui_basics/juce_gui_basics.h>
 
 /*
 
@@ -8,10 +9,23 @@ FRONTEND
 */
 
 PluginEditor::PluginEditor(PluginProcessor& p)
-    : AudioProcessorEditor(&p)
+    : AudioProcessorEditor(&p), pluginProcessor(p)
 {
+    // window
     addAndMakeVisible(editor);
     setSize(400, 300);
+
+    // title 
+    titleTextEditor.setText("Looper");
+    titleTextEditor.setColour(juce::TextEditor::textColourId, juce::Colours::black);  // Set text color
+    titleTextEditor.setColour(juce::TextEditor::backgroundColourId, juce::Colours::white);  // Set background color
+    addAndMakeVisible(titleTextEditor);  // Add the text field to the component
+
+    // label, to display application state
+    addAndMakeVisible(statusLabel);
+    statusLabel.setFont(juce::Font(16.0f)); 
+
+    p.looperProcessor.addStateChangeListener(this);
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -22,4 +36,32 @@ void PluginEditor::paint(juce::Graphics& g)
 void PluginEditor::resized()
 {
     editor.setBounds(getLocalBounds());
+    statusLabel.setBounds(10, 10, getWidth() - 20, 30);
+}
+
+
+void PluginEditor::stateChanged(ApplicationState newState)
+{
+    // Update the GUI or do other necessary tasks in response to the state change
+    displayApplicationState(newState);
+}
+
+void PluginEditor::displayApplicationState(ApplicationState state) {
+        juce::String stateText;
+    switch (state)
+    {
+        case ApplicationState::INIT: stateText = "Empty Loop"; break;
+        case ApplicationState::PLAYBACK: stateText = "Playback"; break;
+        case ApplicationState::PAUSE: stateText = "Paused"; break;
+        case ApplicationState::RECORD: stateText = "Recording"; break;
+        default: stateText = "Unknown State"; break;
+    }
+    
+    statusLabel.setText(stateText, juce::dontSendNotification);
+
+}
+
+PluginEditor::~PluginEditor()
+{
+    this->pluginProcessor.looperProcessor.removeStateChangeListener(this);
 }
