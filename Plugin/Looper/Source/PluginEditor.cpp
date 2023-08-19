@@ -39,11 +39,19 @@ void PluginEditor::resized()
     statusLabel.setBounds(10, 10, getWidth() - 20, 30);
 }
 
+void PluginEditor::handleAsyncUpdate()
+{
+    // Update the GUI or do other necessary tasks in response to state change
+    // This is called on the main message thread.
+    displayApplicationState(pluginProcessor.looperProcessor.getApplicationState());
+}
+
 
 void PluginEditor::stateChanged(ApplicationState newState)
 {
-    // Update the GUI or do other necessary tasks in response to the state change
-    displayApplicationState(newState);
+    // Trigger an asynchronous update.
+    // The handleAsyncUpdate() method will be called on the main message thread.
+    triggerAsyncUpdate();
 }
 
 void PluginEditor::displayApplicationState(ApplicationState state) {
@@ -64,4 +72,5 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 PluginEditor::~PluginEditor()
 {
     this->pluginProcessor.looperProcessor.removeStateChangeListener(this);
+    cancelPendingUpdate();
 }
