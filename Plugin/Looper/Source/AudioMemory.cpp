@@ -22,6 +22,7 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
         newBuffer->copyFrom(0, 0, audioBuffer, 0, 0, bufferSize);  // channel 0
         newBuffer->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);  // channel 1
         this->memory.push_back(std::make_unique<juce::AudioBuffer<float>>(*newBuffer));
+        this->incrementMemoryIndex();
     } else if (memory.size() > 0) {
         // overdubbing -> combine buffers
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
@@ -31,8 +32,24 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
         // update memory with combined buffer, the same that will be output by the plugin
         memoryBufferP->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);
         memoryBufferP->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);
+        this->incrementMemoryIndex();
     } else {
-        throw std::runtime_error("Invalid memory size.");
+        throw std::runtime_error("Invalid audio memory size.");
+    }
+}
+
+/// @brief Combine audio memory content with with current input buffer
+void AudioMemory::PlayBack(juce::AudioBuffer<float>& audioBuffer){
+    if (this->memory.size() == 0) {
+        throw std::runtime_error("Tried to play back empty audio memory.");
+    } else if (memory.size() > 0) {
+        juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
+        // add memory to current buffer -> audioBuffer becomes the combined buffer 
+        audioBuffer.addFrom(0, 0, *memoryBufferP, 0, 0, bufferSize); // TODO this may lead to overflow if `addFrom` does not handle sample normalisation
+        audioBuffer.addFrom(1, 0, *memoryBufferP, 1, 0, bufferSize);
+        this->incrementMemoryIndex();
+    } else {
+        throw std::runtime_error("Invalid audio memory size.");
     }
 }
 
@@ -57,6 +74,7 @@ void AudioMemory::incrementMemoryIndex(){
 /// @brief Delete memory, all elements pointed to by unique_ptr, and clear the vector.
 void AudioMemory::deleteMemory(){
     this->memory.clear();
+    this->resetIndex();
 }
 
 /// @brief Sets the memory index to zero.

@@ -10,11 +10,12 @@ Class to handle the processing logic and state management.
  */
 
 LooperProcessor::LooperProcessor(int nChannels)
-    : state(ApplicationState::INIT), audioMemory(nChannels)
+    : state(ApplicationState::INIT), previousState(ApplicationState::INIT), audioMemory(nChannels)
 {}
 
 void LooperProcessor::setApplicationState(juce::MidiBuffer& midiBuffer) {
     // TODO: decode midiBuffer.
+    // TODO: Update prev state too.
     notifyStateChange();
 }
 
@@ -38,15 +39,15 @@ void LooperProcessor::removeStateChangeListener(StateChangeListener* listener) {
 /// @param audioBuffer reference to the buffer that will be output after the current frame
 void LooperProcessor::processAudio(juce::AudioBuffer<float>& audioBuffer) {
     if (this->state == ApplicationState::INIT){
-        // Do nothing ¯\_(ツ)_/¯
+        if (this->previousState == ApplicationState::INIT) return;
+        this->audioMemory.deleteMemory();
     } else if (this->state == ApplicationState::RECORD){
         // save current input buffer
         this->audioMemory.RecordOrOverdub(audioBuffer);
-        this->audioMemory.incrementMemoryIndex();
     } else if (this->state == ApplicationState::PLAYBACK){
-        this->audioMemory.incrementMemoryIndex();
+        this->audioMemory.PlayBack(audioBuffer);
     } else if (this->state == ApplicationState::PAUSE){
-
+        this->audioMemory.resetIndex();
     }
 }
 

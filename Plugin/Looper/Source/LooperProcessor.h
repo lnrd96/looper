@@ -20,5 +20,6 @@ private:
     juce::ListenerList<StateChangeListener> listeners;
     void notifyStateChange();
     ApplicationState state;
+    ApplicationState previousState;
     AudioMemory audioMemory;
 };

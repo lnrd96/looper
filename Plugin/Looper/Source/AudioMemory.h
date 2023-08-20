@@ -11,6 +11,7 @@ public:
     juce::AudioBuffer<float>* getBufferPointerFromMemory();
     
     void RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer);
+    void PlayBack(juce::AudioBuffer<float>& audioBuffer);
     void resetMemoryPointer();
     void deleteMemory();
     void resetIndex();
