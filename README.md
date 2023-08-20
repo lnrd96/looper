@@ -1,15 +1,15 @@
 # Looper
-A smart looper pedal as VST plugin.
+> A simple looper pedal as VST plugin.
+
+If you want to contribute check out the [wiki](https://github.com/lnrd96/looper/wiki) for techniqual documentation and hints.
 
 ## Outline
 - [Project Vision and Mission](#project-vision-and-mission)
   - [Vision](#vision)
   - [Mission](#mission)
-  - [Technologies](#technologies)
-  - [Roadmap](#roadmap)
-  - [Release Features](#release-features)
-  - [Post-Release Features](#post-release-features)
-- [Build instructions](#build-instructions)
+- [Technologies](#technologies)
+- [Roadmap](#roadmap)
+- [Release Features](#release-features)
 - [License](#license)
 - [Credits](#credits)
 
@@ -30,20 +30,21 @@ used with only one foot step. It is supposed to be placed on the master channel 
 ### Mission
 To realize the key point, simple usage, the operation is implemented using patterns of button presses of the single foot step. For instance pressing once starts recording, pressing twice pauses and holding the button resets the recorded audio. 
 
-### Technologies
+## Technologies
 To simplify the development and deployment the [JUCE](https://juce.com/) framework is used.
 To further facilitate deployment and getting started as a contributor [CMAKE](https://cmake.org/) is used to build the application. JUCE enables building on all common platforms as well as deploying to them.
 
-### Roadmap
+## Roadmap
 TODO
 
-### Release Features
+## Release Features
 The features of the first release include the ability to assign a MIDI command to the application and to perform looping with it.
-#### Post-Release Features
+### Further Ideas
 - A feasable UI
+- Smooth transition between loop end and beginning
 - Audio export
 - BPM detection
-- Smart adaption of loop circle using beat detection
+- Smart adaption of loop cycle using beat detection  
 - Audio normalising and automatic loudness improving
 
 ## License
