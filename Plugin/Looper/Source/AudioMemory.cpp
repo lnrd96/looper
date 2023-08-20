@@ -19,19 +19,20 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
     if (this->memory.size() == 0) {
         // first loop
         auto newBuffer = std::make_unique<juce::AudioBuffer<float>>(nChannels, bufferSize);
-        newBuffer->copyFrom(0, 0, audioBuffer, 0, 0, bufferSize);  // channel 0
-        newBuffer->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);  // channel 1
+        for (int channel = 0; channel < nChannels; ++channel) {
+            newBuffer->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
+        }
         this->memory.push_back(std::move(newBuffer));
         this->incrementMemoryIndex();
     } else if (memory.size() > 0) {
         // overdubbing -> combine buffers
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
-        // add memory to current buffer -> audioBuffer becomes the combined buffer 
-        audioBuffer.addFrom(0, 0, *memoryBufferP, 0, 0, bufferSize); // TODO this may lead to overflow if `addFrom` does not handle sample normalisation
-        audioBuffer.addFrom(1, 0, *memoryBufferP, 1, 0, bufferSize);
-        // update memory with combined buffer, the same that will be output by the plugin
-        memoryBufferP->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);
-        memoryBufferP->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);
+        for (int channel = 0; channel < nChannels; ++channel) {
+            // add memory to current buffer -> audioBuffer becomes the combined buffer 
+            audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);
+            // update memory with combined buffer, the same that will be output by the plugin
+            memoryBufferP->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
+        }
         this->incrementMemoryIndex();
     } else {
         throw std::runtime_error("Invalid audio memory size.");
@@ -45,8 +46,9 @@ void AudioMemory::PlayBack(juce::AudioBuffer<float>& audioBuffer){
     } else if (memory.size() > 0) {
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
         // add memory to current buffer -> audioBuffer becomes the combined buffer 
-        audioBuffer.addFrom(0, 0, *memoryBufferP, 0, 0, bufferSize); // TODO this may lead to overflow if `addFrom` does not handle sample normalisation
-        audioBuffer.addFrom(1, 0, *memoryBufferP, 1, 0, bufferSize);
+        for (int channel = 0; channel < nChannels; ++channel) {
+            audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);  // TODO: overflow-add?
+        }
         this->incrementMemoryIndex();
     } else {
         throw std::runtime_error("Invalid audio memory size.");
