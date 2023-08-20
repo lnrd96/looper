@@ -35,3 +35,13 @@ target_link_libraries(${BaseTargetName} PRIVATE
         juce_recommended_config_flags
         juce_recommended_lto_flags
         juce_recommended_warning_flags)
+
+# preprocessor definitions for logging
+
+if(ENABLE_LOGGING)
+        add_definitions(-DENABLE_LOGGING=1)
+else()
+        add_definitions(-DENABLE_LOGGING=0)
+endif()
+
+add_definitions(-DLOG_DIRECTORY="${LOG_DIRECTORY}")

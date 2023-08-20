@@ -14,6 +14,16 @@ PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
 {
     bufferSize = -1;
     parameters.add(*this);
+    #if ENABLE_LOGGING
+        juce::Time currentTime = juce::Time::getCurrentTime();
+        juce::String timestamp = currentTime.toString(true, true); // Format: YYYY-MM-DD HH:mm:ss
+        juce::String logFileName = juce::String(LOG_DIRECTORY) + juce::String("/pluginLog_") + timestamp + juce::String(".txt");
+        juce::File logFile(logFileName);
+        juce::Logger::setCurrentLogger (new juce::FileLogger (logFile, "Your Plugin Logs", 10000));
+    #else
+        juce::Logger::setCurrentLogger(nullptr);
+    #endif
+
 }
 
 
@@ -96,6 +106,11 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
         }
         // Load your non-parameter data now
     }
+}
+
+PluginProcessor::~PluginProcessor()
+{
+    juce::Logger::setCurrentLogger(nullptr);  // This will delete the logger set above
 }
 
 /**

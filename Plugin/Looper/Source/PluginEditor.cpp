@@ -72,5 +72,5 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 PluginEditor::~PluginEditor()
 {
     this->pluginProcessor.looperProcessor.removeStateChangeListener(this);
-    cancelPendingUpdate();
+    cancelPendingUpdate();  // from AsyncUpdater
 }
