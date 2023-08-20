@@ -18,10 +18,10 @@ AudioMemory::AudioMemory(int nChannels)
 void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
     if (this->memory.size() == 0) {
         // first loop
-        juce::AudioBuffer<float>* newBuffer = new juce::AudioBuffer<float>(nChannels, bufferSize);
+        auto newBuffer = std::make_unique<juce::AudioBuffer<float>>(nChannels, bufferSize);
         newBuffer->copyFrom(0, 0, audioBuffer, 0, 0, bufferSize);  // channel 0
         newBuffer->copyFrom(1, 0, audioBuffer, 1, 0, bufferSize);  // channel 1
-        this->memory.push_back(std::make_unique<juce::AudioBuffer<float>>(*newBuffer));
+        this->memory.push_back(std::move(newBuffer));
         this->incrementMemoryIndex();
     } else if (memory.size() > 0) {
         // overdubbing -> combine buffers
