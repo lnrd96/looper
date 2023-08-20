@@ -4,12 +4,12 @@
 If you want to contribute check out the [wiki](https://github.com/lnrd96/looper/wiki) for techniqual documentation and hints.
 
 ## Outline
-- [Project Vision and Mission](#project-vision-and-mission)
+- [Project Vision and Mission 🚀](#project-vision-and-mission)
   - [Vision](#vision)
   - [Mission](#mission)
 - [Technologies](#technologies)
-- [Roadmap](#roadmap)
-- [Release Features](#release-features)
+- [Roadmap 🏁](#roadmap)
+- [Future Ideas 💡](#future-ideas)
 - [License](#license)
 - [Credits](#credits)
 
@@ -35,17 +35,25 @@ To simplify the development and deployment the [JUCE](https://juce.com/) framewo
 To further facilitate deployment and getting started as a contributor [CMAKE](https://cmake.org/) is used to build the application. JUCE enables building on all common platforms as well as deploying to them.
 
 ## Roadmap
-TODO
+To get to the first stable version where a MIDI command to control the plugin can be assigned and looping can be performed.
 
-## Release Features
-The features of the first release include the ability to assign a MIDI command to the application and to perform looping with it.
-### Further Ideas
-- A feasable UI
+- [x] Build and Debug setup works
+- [x] Architecture is set up and documented
+- [x] Looping logic is implemented based on the application state
+- [x] Front-End is listener of Back-End
+- [ ] MIDI command to use can be set by the user
+- [ ] Application states are set according to MIDI input
+- [ ] Looping can be performed
+
+### Future Ideas 
+- A good looking UI
 - Smooth transition between loop end and beginning
 - Audio export
+- Ability to mix loudness of layers selectively
+- Ability to remove a layer selectively
 - BPM detection
-- Smart adaption of loop cycle using beat detection  
-- Audio normalising and automatic loudness improving
+- Smart adaption of loop cycle using beat detection
+  - Such that the app automatically fixes if the user did not set the loop perfectly in time
 
 ## License
 TODO
