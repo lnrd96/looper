@@ -35,14 +35,14 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
         }
         this->incrementMemoryIndex();
     } else {
-        throw std::runtime_error("Invalid audio memory size.");
+        juce::Logger::writeToLog("Invalid audio memory size.");
     }
 }
 
 /// @brief Combine audio memory content with with current input buffer
 void AudioMemory::PlayBack(juce::AudioBuffer<float>& audioBuffer){
     if (this->memory.size() == 0) {
-        throw std::runtime_error("Tried to play back empty audio memory.");
+        juce::Logger::writeToLog("Tried to play back empty audio memory.");
     } else if (memory.size() > 0) {
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
         // add memory to current buffer -> audioBuffer becomes the combined buffer 
@@ -51,7 +51,7 @@ void AudioMemory::PlayBack(juce::AudioBuffer<float>& audioBuffer){
         }
         this->incrementMemoryIndex();
     } else {
-        throw std::runtime_error("Invalid audio memory size.");
+        juce::Logger::writeToLog("Invalid audio memory size.");
     }
 }
 
