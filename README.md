@@ -46,16 +46,6 @@ The features of the first release include the ability to assign a MIDI command t
 - Smart adaption of loop circle using beat detection
 - Audio normalising and automatic loudness improving
 
-## Build instructions
-Usual build using cmake, working directory should be root of this repo.
-```cmake
-mkdir build
-cd build
-cmake .. 
-cmake --build .
-```
-Executables will be at `build/Plugin/Looper/Looper_artefacts/`.
-
 ## License
 TODO
 
