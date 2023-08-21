@@ -8,19 +8,18 @@ class AudioMemory {
 public:
     AudioMemory(int numChannels);
     
-    juce::AudioBuffer<float>* getBufferPointerFromMemory();
-    
     void RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer);
     void PlayBack(juce::AudioBuffer<float>& audioBuffer);
     void resetMemoryPointer();
     void deleteMemory();
     void resetIndex();
-    void incrementMemoryIndex();
     void setBufferSize(int bufferSize);
 
 private:
     int nChannels;
     int bufferSize;
+    void incrementMemoryIndex();
+    juce::AudioBuffer<float>* getBufferPointerFromMemory();
     
     // vector to store the audio buffers
     // By using std::unique_ptr, the ownership and lifetime management of 
