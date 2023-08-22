@@ -42,8 +42,9 @@ To get to the first stable version where a MIDI command to control the plugin ca
 - [x] Looping logic is implemented based on the application state
 - [x] Front-End is listener of Back-End
 - [ ] MIDI command to use can be set by the user
-- [ ] Application states are set according to MIDI input
-- [ ] Looping can be performed
+  - [ ] It can be set via the DAW. The control button is exposed to the DAW
+- [x] Application states are set according to MIDI input
+- [x] Looping can be performed
 
 ### Future Ideas 
 - A good looking UI
