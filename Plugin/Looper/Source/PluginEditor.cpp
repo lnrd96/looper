@@ -77,7 +77,7 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 
 void PluginEditor::buttonClicked(juce::Button* button) {
     if (button == &triggerButton) {
-        pluginProcessor.looperProcessor.setApplicationState();
+        pluginProcessor.looperProcessor.detectApplicationState();
     }
 }
 

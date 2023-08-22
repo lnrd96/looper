@@ -10,12 +10,48 @@ Class to handle the processing logic and state management.
  */
 
 LooperProcessor::LooperProcessor(int nChannels)
-    : state(ApplicationState::INIT), previousState(ApplicationState::INIT), audioMemory(nChannels)
+    : state(ApplicationState::INIT), audioMemory(nChannels)
 {}
 
-void LooperProcessor::setApplicationState(juce::MidiBuffer& midiBuffer) {
-    // TODO: decode midiBuffer.
-    // TODO: Update prev state too.
+/**
+ * @brief Is called when the trigger button is pressed.
+ * Sets next state according to state machine properties.
+ * 
+ */
+void LooperProcessor::detectApplicationState() {
+    juce::int64 currentTimeMs = juce::Time::currentTimeMillis();
+
+    // Add the current timestamp to the list
+    callTimestamps.add(currentTimeMs);
+
+    // Remove any timestamps that are too old
+    while (callTimestamps.size() > 0 && (currentTimeMs - callTimestamps.getFirst()) > triggerTimeSpanMs) {
+        callTimestamps.remove(0);
+    }
+
+    int nTimesTriggeredInTimeSpan = callTimestamps.size();
+    if (nTimesTriggeredInTimeSpan == 2) {
+        state = ApplicationState::PAUSE;
+    }
+    else if (nTimesTriggeredInTimeSpan > 2) {
+        state = ApplicationState::INIT;
+    }
+    else {
+        switch(state){
+            case ApplicationState::INIT:
+                state = ApplicationState::RECORD;
+                break;
+            case ApplicationState::RECORD:
+                state = ApplicationState::PLAYBACK;
+                break;
+            case ApplicationState::PLAYBACK:
+                state = ApplicationState::RECORD;
+                break;
+            case ApplicationState::PAUSE:
+                state = ApplicationState::PLAYBACK;
+                break;
+        }
+    }
     notifyStateChange();
 }
 
@@ -39,10 +75,8 @@ void LooperProcessor::removeStateChangeListener(StateChangeListener* listener) {
 /// @param audioBuffer reference to the buffer that will be output after the current frame
 void LooperProcessor::processAudio(juce::AudioBuffer<float>& audioBuffer) {
     if (this->state == ApplicationState::INIT){
-        if (this->previousState == ApplicationState::INIT) return;
         this->audioMemory.deleteMemory();
     } else if (this->state == ApplicationState::RECORD){
-        // save current input buffer
         this->audioMemory.RecordOrOverdub(audioBuffer);
     } else if (this->state == ApplicationState::PLAYBACK){
         this->audioMemory.PlayBack(audioBuffer);
