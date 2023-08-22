@@ -35,6 +35,7 @@ void LooperProcessor::detectApplicationState() {
     }
     else if (nTimesTriggeredInTimeSpan > 2) {
         state = ApplicationState::INIT;
+        audioMemory.isFirstLoop = true;
     }
     else {
         switch(state){
@@ -45,6 +46,9 @@ void LooperProcessor::detectApplicationState() {
                 state = ApplicationState::PLAYBACK;
                 break;
             case ApplicationState::PLAYBACK:
+                if (audioMemory.isFirstLoop == true){
+                    audioMemory.isFirstLoop = false;
+                }
                 state = ApplicationState::RECORD;
                 break;
             case ApplicationState::PAUSE:

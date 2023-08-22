@@ -16,15 +16,14 @@ AudioMemory::AudioMemory(int nChannels)
 ///        already recorded content.
 /// @param audioBuffer 
 void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
-    if (this->memory.size() == 0) {
-        // first loop
+    if (isFirstLoop) {
         auto newBuffer = std::make_unique<juce::AudioBuffer<float>>(nChannels, bufferSize);
         for (int channel = 0; channel < nChannels; ++channel) {
             newBuffer->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
         }
         this->memory.push_back(std::move(newBuffer));
         this->incrementMemoryIndex();
-    } else if (memory.size() > 0) {
+    } else if (!isFirstLoop) {
         // overdubbing -> combine buffers
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
         for (int channel = 0; channel < nChannels; ++channel) {

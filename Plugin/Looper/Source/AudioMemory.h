@@ -14,6 +14,7 @@ public:
     void deleteMemory();
     void resetIndex();
     void setBufferSize(int bufferSize);
+    bool isFirstLoop = true;
 
 private:
     int nChannels;

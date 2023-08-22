@@ -23,9 +23,7 @@ PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
     #else
         juce::Logger::setCurrentLogger(nullptr);
     #endif
-
 }
-
 
 /**
  * @brief Method is called by the host DAW to process a block of audio data.
@@ -51,6 +49,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
 
     if (parameters.enable->get())
         audioBuffer.applyGain(parameters.gain->get());
+    
     else
         audioBuffer.clear();
 }
