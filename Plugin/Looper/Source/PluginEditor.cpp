@@ -26,6 +26,11 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     statusLabel.setFont(juce::Font(16.0f)); 
 
     p.looperProcessor.addStateChangeListener(this);
+
+    triggerButton.setButtonText("Footstep Trigger");
+    triggerButton.addListener(this);
+    addAndMakeVisible(triggerButton);
+
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -34,9 +39,10 @@ void PluginEditor::paint(juce::Graphics& g)
 }
 
 void PluginEditor::resized()
-{
+{   // plugin is 400, 300
     editor.setBounds(getLocalBounds());
-    statusLabel.setBounds(10, 10, getWidth() - 20, 30);
+    statusLabel.setBounds(200 - 15, 200, getWidth() - 20, 30);
+    triggerButton.setBounds(200 - 75, 100, 150, 30); // x, y, width, height
 }
 
 void PluginEditor::handleAsyncUpdate()
@@ -68,6 +74,13 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
     statusLabel.setText(stateText, juce::dontSendNotification);
 
 }
+
+void PluginEditor::buttonClicked(juce::Button* button) {
+    if (button == &triggerButton) {
+        pluginProcessor.looperProcessor.setApplicationState();
+    }
+}
+
 
 PluginEditor::~PluginEditor()
 {

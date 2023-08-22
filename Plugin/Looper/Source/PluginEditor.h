@@ -3,7 +3,8 @@
 #include "States.h"
 #include "StateChangeListener.h"
 
-class PluginEditor : public juce::AudioProcessorEditor, public StateChangeListener, public juce::AsyncUpdater
+class PluginEditor : public juce::AudioProcessorEditor, public StateChangeListener, public juce::AsyncUpdater, 
+                     juce::Button::Listener
 {
 public:
     explicit PluginEditor(PluginProcessor& p);
@@ -11,6 +12,8 @@ public:
     juce::TextEditor titleTextEditor;
     void stateChanged(ApplicationState newState) override;
     void handleAsyncUpdate() override;
+    juce::TextButton triggerButton;
+    void buttonClicked(juce::Button* button) override;
 
 private:
     PluginProcessor& pluginProcessor;
