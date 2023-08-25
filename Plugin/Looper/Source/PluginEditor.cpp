@@ -25,12 +25,24 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     addAndMakeVisible(statusLabel);
     statusLabel.setFont(juce::Font(16.0f)); 
 
+    // control button
+    footstepTrigger.setButtonText("Footstep Trigger");
+    footstepTrigger.addListener(this);
+    addAndMakeVisible(footstepTrigger);
+
+    // register for notification on state change 
     p.looperProcessor.addStateChangeListener(this);
 
-    triggerButton.setButtonText("Footstep Trigger");
-    triggerButton.addListener(this);
-    addAndMakeVisible(triggerButton);
+    p.apvts.addParameterListener("Footstep Trigger", this);
 
+}
+
+void PluginEditor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "Footstep Trigger")
+    {
+        pluginProcessor.looperProcessor.detectApplicationState();
+    }
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -42,7 +54,7 @@ void PluginEditor::resized()
 {   // plugin is 400, 300
     editor.setBounds(getLocalBounds());
     statusLabel.setBounds(200 - 15, 200, getWidth() - 20, 30);
-    triggerButton.setBounds(200 - 75, 100, 150, 30); // x, y, width, height
+    footstepTrigger.setBounds(200 - 75, 100, 150, 30); // x, y, width, height
 }
 
 void PluginEditor::handleAsyncUpdate()
@@ -76,14 +88,18 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 }
 
 void PluginEditor::buttonClicked(juce::Button* button) {
-    if (button == &triggerButton) {
-        pluginProcessor.looperProcessor.detectApplicationState();
+    if (button == &footstepTrigger) {
+        auto* param = pluginProcessor.apvts.getParameter("Footstep Trigger");
+        // Toggle the parameter value
+        param->setValueNotifyingHost(param->getValue() == 0.0f ? 1.0f : 0.0f);
     }
+    //     pluginProcessor.looperProcessor.detectApplicationState();
+    // }
 }
-
 
 PluginEditor::~PluginEditor()
 {
-    this->pluginProcessor.looperProcessor.removeStateChangeListener(this);
+    pluginProcessor.looperProcessor.removeStateChangeListener(this);
     cancelPendingUpdate();  // from AsyncUpdater
+    pluginProcessor.apvts.removeParameterListener("Footstep Trigger", this);
 }

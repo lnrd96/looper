@@ -10,10 +10,10 @@ BACKEND
 /**
  * @brief Constructor is implicit class declaration.
  */
-PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
+PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels()),
+                                     apvts(*this, &undoManager, "PARAMETERS", createParameterLayout())
 {
     bufferSize = -1;
-    parameters.add(*this);
     #if ENABLE_LOGGING
         juce::Time currentTime = juce::Time::getCurrentTime();
         juce::String timestamp = currentTime.toString(true, true); // Format: YYYY-MM-DD HH:mm:ss
@@ -35,9 +35,11 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
                                    juce::MidiBuffer& midiBuffer) {
     // set buffer size and update it if it changed
     if (bufferSize == -1) {  // first run
+        // buffer size & samplerate is only guaranteed to be correctly obtained from within this method
         bufferSize = getBlockSize();
-        // forward bufferSize to audioMemory via looperProcessor
-        looperProcessor.setBufferSize(getBlockSize());
+        sampleRate = getSampleRate();
+        // -> forward info to audioMemory via looperProcessor
+        looperProcessor.forwardAudioDeviceInfoToAudioMemory(sampleRate, bufferSize);
     } else if (bufferSize != getBlockSize()) {
         throw std::runtime_error("The Plugin does currently not support block size changes during runtime.");
         // TODO: Reinitialize audioMemory as quick fix?
@@ -47,11 +49,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     // delegate audio processing to LooperProcessor class by passing the reference
     looperProcessor.processAudio(audioBuffer);
 
-    if (parameters.enable->get())
-        audioBuffer.applyGain(parameters.gain->get());
-    
-    else
-        audioBuffer.clear();
+    float gainValue = apvts.getRawParameterValue("Gain")->load();
+    audioBuffer.applyGain(gainValue);
 }
 
 /**
@@ -63,46 +62,29 @@ juce::AudioProcessorEditor* PluginProcessor::createEditor() {
     return new PluginEditor(*this);
 }
 
-/**
- * @brief 
- * 
- * @param destData The memoryblock to store the serialized data.
- */
 void PluginProcessor::getStateInformation(juce::MemoryBlock& destData) {
-    // Serializes parameters, and any other potential data into an XML:
-    juce::ValueTree params("Params");
-    for (auto& param: getParameters())
-    {
-        juce::ValueTree paramTree(PluginHelpers::getParamID(param));
-        paramTree.setProperty("Value", param->getValue(), nullptr);
-        params.appendChild(paramTree, nullptr);
-    }
-    juce::ValueTree pluginPreset("MyPlugin");
-    pluginPreset.appendChild(params, nullptr);
-    // This a good place to add any non-parameters to your preset
-    copyXmlToBinary(*pluginPreset.createXml(), destData);
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml(state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
-/**
- * @brief Set application state from XML.
- * 
- * @param data location of data.
- * @param sizeInBytes size of data.
- */
 void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
-    auto xml = getXmlFromBinary(data, sizeInBytes);
-    if (xml != nullptr) {
-        auto preset = juce::ValueTree::fromXml(*xml);
-        auto params = preset.getChildWithName("Params");
+    std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
-        for (auto& param: getParameters()) {
-            auto paramTree = params.getChildWithName(PluginHelpers::getParamID(param));
-            if (paramTree.isValid())
-                param->setValueNotifyingHost(paramTree["Value"]);
-        }
-        // Load your non-parameter data now
-    }
+    if (xmlState != nullptr)
+        if (xmlState->hasTagName(apvts.state.getType()))
+            apvts.replaceState(juce::ValueTree::fromXml(*xmlState));
 }
+
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain", 0.f, 1.f, 1.0f)); // TODO one should set parameter version for Logic and Garageband
+    params.push_back(std::make_unique<juce::AudioParameterBool>("Footstep Trigger", "Footstep Trigger", false));
+
+    return { params.begin(), params.end() };
+}
+
 
 PluginProcessor::~PluginProcessor()
 {

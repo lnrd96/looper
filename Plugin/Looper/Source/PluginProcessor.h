@@ -1,6 +1,4 @@
 #pragma once
-
-#include "Parameters.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "LooperProcessor.h"
 
@@ -14,8 +12,11 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
     ~PluginProcessor() override;
     LooperProcessor looperProcessor;
+    juce::AudioProcessorValueTreeState apvts;
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
 private:
     int bufferSize;
-    Parameters parameters;
+    double sampleRate;
+    juce::UndoManager undoManager;
 };
