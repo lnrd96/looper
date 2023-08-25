@@ -25,17 +25,14 @@ real world counter parts. The same holds for keyboard players as the digital app
 
 [Looping](https://youtu.be/oc0yCiCvy6Y?t=144) is often used as a creative tool in music production, allowing a musician to build up layers of sound and create complex compositions by layering loops on top of each other. It can be used live, in performance, to create a backing track or to improvise over a repeating groove.
 
-This PlugIn offers a simple approach to looping by implementing the common behaviour of an analog looper pedal. It is controllab using one single oot step or other MIDI buttons.
+Some DAWs offer complex and proprietary approaches to looping. This PlugIn offers a simple and universal approach to looping by implementing the common behaviour of an analog looper pedal. It is controllab using one single single command, e.g. assigned to a footstep.
 
-The vision of this plugin is to provide a universally applicable looper VST plugin that can be
-used straight forward. 
-
-The Plugin can be placed on the master channel of the DAW of choice such that any performances - whether it is vocals, drums, guitar or keys - is captured.
+The Plugin is straight forward and can be placed on the master channel of a DAW such that any performance - whether it is vocals, drums, guitar or keys - is captured.
 
 ### Mission
 
 ## Usage
-To realize the key point, simple usage, one can operate using only one button. One performs simple patterns with it. For instance pressing once starts recording, pressing twice pauses and pressing three times resets the recorded audio. Also the software architecture foolows the KISS approach while being open for extensions. Check out the Wiki documentation on the software architecture.
+To realize the key point, simple usage, one can operate using only one button. One performs simple patterns with it. For instance pressing once starts recording, pressing twice pauses and pressing three times resets the recorded audio. 
 
 ## Technologies
 To simplify the development and deployment the [JUCE](https://juce.com/) framework is used.
@@ -56,6 +53,7 @@ To get to the first stable version where a MIDI command to control the plugin ca
 
 ## Future Features for free version
 - A good looking UI
+- Ability to undo last loop
 
 ## Future Features for paid version
 - Audio export
