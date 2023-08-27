@@ -33,16 +33,6 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     // register for notification on state change 
     p.looperProcessor.addStateChangeListener(this);
 
-    p.apvts.addParameterListener("Footstep Trigger", this);
-
-}
-
-void PluginEditor::parameterChanged(const juce::String& parameterID, float newValue)
-{
-    if (parameterID == "Footstep Trigger")
-    {
-        pluginProcessor.looperProcessor.detectApplicationState();
-    }
 }
 
 void PluginEditor::paint(juce::Graphics& g)
@@ -101,5 +91,4 @@ PluginEditor::~PluginEditor()
 {
     pluginProcessor.looperProcessor.removeStateChangeListener(this);
     cancelPendingUpdate();  // from AsyncUpdater
-    pluginProcessor.apvts.removeParameterListener("Footstep Trigger", this);
 }

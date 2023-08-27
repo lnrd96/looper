@@ -4,7 +4,7 @@
 #include "StateChangeListener.h"
 
 class PluginEditor : public juce::AudioProcessorEditor, public StateChangeListener, public juce::AsyncUpdater, 
-                     juce::Button::Listener, juce::AudioProcessorValueTreeState::Listener
+                     juce::Button::Listener
 {
 public:
     explicit PluginEditor(PluginProcessor& p);
@@ -14,7 +14,6 @@ public:
     void handleAsyncUpdate() override;
     juce::TextButton footstepTrigger;
     void buttonClicked(juce::Button* button) override;
-    void parameterChanged(const juce::String& parameterID, float newValue) override;
 
 
 private:

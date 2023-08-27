@@ -13,13 +13,16 @@ public:
     void resetMemoryPointer();
     void deleteMemory();
     void resetIndex();
-    void setBufferSize(int bufferSize);
     bool isFirstLoop = true;
+    void applyCrossFade();
+    void setAudioDeviceInfo(int bufferSize, int sampleRate);
 
 private:
     int nChannels;
     int bufferSize;
+    int sampleRate;
     void incrementMemoryIndex();
+    const int CROSSFADE_MS = 200;
     juce::AudioBuffer<float>* getBufferPointerFromMemory();
     
     // vector to store the audio buffers

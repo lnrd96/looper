@@ -23,6 +23,7 @@ PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
     #else
         juce::Logger::setCurrentLogger(nullptr);
     #endif
+    apvts.addParameterListener("Footstep Trigger", this);
 }
 
 /**
@@ -39,11 +40,11 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
         bufferSize = getBlockSize();
         sampleRate = getSampleRate();
         // -> forward info to audioMemory via looperProcessor
-        looperProcessor.forwardAudioDeviceInfoToAudioMemory(sampleRate, bufferSize);
-    } else if (bufferSize != getBlockSize()) {
-        throw std::runtime_error("The Plugin does currently not support block size changes during runtime.");
+        looperProcessor.forwardAudioDeviceInfoToAudioMemory(bufferSize, sampleRate);
+    } else if (bufferSize != getBlockSize() || sampleRate != getSampleRate()) {
+        throw std::runtime_error("The Plugin does currently not support block size changes or samplerate changes during runtime.");
         // TODO: Reinitialize audioMemory as quick fix?
-        // looperProcessor.setBufferSize(getBlockSize());
+        // audioMemory will have to adapt to such changes
     }
     
     // delegate audio processing to LooperProcessor class by passing the reference
@@ -52,6 +53,15 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     float gainValue = apvts.getRawParameterValue("Gain")->load();
     audioBuffer.applyGain(gainValue);
 }
+
+void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
+{
+    if (parameterID == "Footstep Trigger")
+    {
+        looperProcessor.detectApplicationState();
+    }
+}
+
 
 /**
  * @brief The createEditor method is called by the host DAW to create the GUI of the plugin. 
@@ -89,6 +99,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
 PluginProcessor::~PluginProcessor()
 {
     juce::Logger::setCurrentLogger(nullptr);  // This will delete the logger set above
+    apvts.removeParameterListener("Footstep Trigger", this);
 }
 
 /**

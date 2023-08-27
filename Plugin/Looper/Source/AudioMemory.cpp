@@ -22,6 +22,10 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
             newBuffer->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
         }
         this->memory.push_back(std::move(newBuffer));
+        // apply crossfode before continuing all over TODO: think about the placement again!!
+        if (memoryIndex == memory.size() - 1){
+            applyCrossFade();
+        }
         this->incrementMemoryIndex();
     } else if (!isFirstLoop) {
         // overdubbing -> combine buffers
@@ -31,6 +35,10 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
             audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);
             // update memory with combined buffer, the same that will be output by the plugin
             memoryBufferP->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
+        }
+        // apply crossfode before continuing all over
+        if (memoryIndex == memory.size() - 1){
+            applyCrossFade();
         }
         this->incrementMemoryIndex();
     } else {
@@ -83,7 +91,46 @@ void AudioMemory::resetIndex(){
     this->memoryIndex = 0;
 }
 
-/// @brief Update the buffer size.
-void AudioMemory::setBufferSize(int bufferSize) {
+/// @brief Set or update the buffer size and sample rate
+void AudioMemory::setAudioDeviceInfo(int bufferSize, int sampleRate) {
     this->bufferSize = bufferSize;
+    this->sampleRate = sampleRate;
+}
+
+/**
+ * @brief Applies an Equal Power (or Cosine) crossfade of AudioMemory::CROSSFADE_MS ms to the memory.
+ *        The number of buffers needed to do so depends on the samplerate and the buffer size.
+ *        The absolute duration (in time) of the signal doesn't change
+ *        Future note: If several audio layers exist, it is only applied to the most recent one.
+ */
+void AudioMemory::applyCrossFade() {
+    int nSamplesRequired = CROSSFADE_MS / 1000 * sampleRate;
+    int nBuffersRequired = std::ceil(static_cast<float>(nSamplesRequired) / bufferSize);
+
+    // loop over relevant buffers
+    for (int beginBufferIdx = 0; beginBufferIdx < nBuffersRequired; beginBufferIdx++) {
+        int endBufferIdx = memory.size() - nBuffersRequired + beginBufferIdx; // find the right buffer in the end for fade-out
+        auto& fadeOutBuffer = *memory[endBufferIdx];
+        auto& fadeInBuffer = *memory[beginBufferIdx];
+
+        // loop over samples
+        for (int sampleIdx = 0; sampleIdx < bufferSize && (endBufferIdx * bufferSize + sampleIdx) < nSamplesRequired; sampleIdx++) {
+            // calc crossfade gain
+            float t = static_cast<float>(endBufferIdx * bufferSize + sampleIdx) / nSamplesRequired;  // where we are in the cross fade
+            float fadeOutGain = std::sqrt(0.5 * (1.0 + std::cos(juce::MathConstants<float>::pi * t)));
+            float fadeInGain = std::sqrt(0.5 * (1.0 - std::cos(juce::MathConstants<float>::pi * t)));
+
+            // apply the gain
+            for (int channel = 0; channel < nChannels; ++channel) {
+                float fadedOutSample = fadeOutBuffer.getSample(channel, sampleIdx) * fadeOutGain;
+                float fadedInSample = fadeInBuffer.getSample(channel, sampleIdx) * fadeInGain;
+                // mix the faded out end of the recording with the faded in start
+                float mixedSample = fadedOutSample + fadedInSample;
+                // set the mixed samples to the buffers
+                fadeOutBuffer.setSample(channel, sampleIdx, mixedSample);
+                fadeInBuffer.setSample(channel, sampleIdx, mixedSample);
+            }
+        }
+    }
+
 }

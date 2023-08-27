@@ -9,12 +9,12 @@
 class LooperProcessor {
 public:
     explicit LooperProcessor(int nChannels);
-    void setBufferSize(int bufferSize);
     void detectApplicationState();
     ApplicationState getApplicationState();
     void processAudio(juce::AudioBuffer<float>& audioBuffer);
     void addStateChangeListener(StateChangeListener* listener);
     void removeStateChangeListener(StateChangeListener* listener);
+    void forwardAudioDeviceInfoToAudioMemory(int bufferSize, int sampleRate);
 
 private:
     static constexpr juce::int64 triggerTimeSpanMs = 1000;

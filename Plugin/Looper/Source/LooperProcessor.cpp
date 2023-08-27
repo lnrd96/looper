@@ -58,9 +58,8 @@ void LooperProcessor::detectApplicationState() {
     }
     notifyStateChange();
 }
-
-void LooperProcessor::setBufferSize(int bufferSize) {
-    audioMemory.setBufferSize(bufferSize);
+void LooperProcessor::forwardAudioDeviceInfoToAudioMemory(int bufferSize, int sampleRate){
+    audioMemory.setAudioDeviceInfo(bufferSize, sampleRate);
 }
 
 ApplicationState LooperProcessor::getApplicationState() {

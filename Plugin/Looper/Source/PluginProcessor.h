@@ -2,7 +2,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "LooperProcessor.h"
 
-class PluginProcessor : public PluginHelpers::ProcessorBase {
+class PluginProcessor : public PluginHelpers::ProcessorBase, juce::AudioProcessorValueTreeState::Listener {
 public:
     PluginProcessor();
     void processBlock(juce::AudioBuffer<float>& audioBuffer,
@@ -14,9 +14,10 @@ public:
     LooperProcessor looperProcessor;
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void parameterChanged(const juce::String& parameterID, float newValue) override;
 
 private:
     int bufferSize;
-    double sampleRate;
+    int sampleRate;
     juce::UndoManager undoManager;
 };
