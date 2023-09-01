@@ -15,17 +15,13 @@ AudioMemory::AudioMemory(int nChannels)
 /// @brief Add the audio buffer to the current loop and combine it with
 ///        already recorded content.
 /// @param audioBuffer 
-void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
+void AudioMemory::recordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
     if (isFirstLoop) {
         auto newBuffer = std::make_unique<juce::AudioBuffer<float>>(nChannels, bufferSize);
         for (int channel = 0; channel < nChannels; ++channel) {
             newBuffer->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
         }
         this->memory.push_back(std::move(newBuffer));
-        // apply crossfode before continuing all over TODO: think about the placement again!!
-        if (memoryIndex == memory.size() - 1){
-            applyCrossFade();
-        }
         this->incrementMemoryIndex();
     } else if (!isFirstLoop) {
         // overdubbing -> combine buffers
@@ -36,10 +32,6 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
             // update memory with combined buffer, the same that will be output by the plugin
             memoryBufferP->copyFrom(channel, 0, audioBuffer, channel, 0, bufferSize);
         }
-        // apply crossfode before continuing all over
-        if (memoryIndex == memory.size() - 1){
-            applyCrossFade();
-        }
         this->incrementMemoryIndex();
     } else {
         juce::Logger::writeToLog("Invalid audio memory size.");
@@ -47,7 +39,7 @@ void AudioMemory::RecordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
 }
 
 /// @brief Combine audio memory content with with current input buffer
-void AudioMemory::PlayBack(juce::AudioBuffer<float>& audioBuffer){
+void AudioMemory::playBack(juce::AudioBuffer<float>& audioBuffer){
     if (this->memory.size() == 0) {
         juce::Logger::writeToLog("Tried to play back empty audio memory.");
     } else if (memory.size() > 0) {
@@ -74,7 +66,7 @@ juce::AudioBuffer<float>* AudioMemory::getBufferPointerFromMemory(){
 void AudioMemory::incrementMemoryIndex(){
     if (this->memory.size() <= this->memoryIndex + 1 ){
         // Start loop from beginning
-        this->resetIndex();
+        this->resetMemoryIndex();
     } else {
         this->memoryIndex++;
     }
@@ -83,11 +75,11 @@ void AudioMemory::incrementMemoryIndex(){
 /// @brief Delete memory, all elements pointed to by unique_ptr, and clear the vector.
 void AudioMemory::deleteMemory(){
     this->memory.clear();
-    this->resetIndex();
+    this->resetMemoryIndex();
 }
 
 /// @brief Sets the memory index to zero.
-void AudioMemory::resetIndex(){
+void AudioMemory::resetMemoryIndex(){
     this->memoryIndex = 0;
 }
 

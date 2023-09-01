@@ -21,10 +21,10 @@ LooperProcessor::LooperProcessor(int nChannels)
 void LooperProcessor::detectApplicationState() {
     juce::int64 currentTimeMs = juce::Time::currentTimeMillis();
 
-    // Add the current timestamp to the list
+    // add the current timestamp to the list
     callTimestamps.add(currentTimeMs);
 
-    // Remove any timestamps that are too old
+    // remove any timestamps that are too old
     while (callTimestamps.size() > 0 && (currentTimeMs - callTimestamps.getFirst()) > triggerTimeSpanMs) {
         callTimestamps.remove(0);
     }
@@ -43,6 +43,7 @@ void LooperProcessor::detectApplicationState() {
                 state = ApplicationState::RECORD;
                 break;
             case ApplicationState::RECORD:
+                audioMemory.applyCrossFade();
                 state = ApplicationState::PLAYBACK;
                 break;
             case ApplicationState::PLAYBACK:
@@ -77,14 +78,14 @@ void LooperProcessor::removeStateChangeListener(StateChangeListener* listener) {
 /// @brief process current audio block
 /// @param audioBuffer reference to the buffer that will be output after the current frame
 void LooperProcessor::processAudio(juce::AudioBuffer<float>& audioBuffer) {
-    if (this->state == ApplicationState::INIT){
-        this->audioMemory.deleteMemory();
-    } else if (this->state == ApplicationState::RECORD){
-        this->audioMemory.RecordOrOverdub(audioBuffer);
-    } else if (this->state == ApplicationState::PLAYBACK){
-        this->audioMemory.PlayBack(audioBuffer);
-    } else if (this->state == ApplicationState::PAUSE){
-        this->audioMemory.resetIndex();
+    if (state == ApplicationState::INIT){
+        audioMemory.deleteMemory();
+    } else if (state == ApplicationState::RECORD){
+        audioMemory.recordOrOverdub(audioBuffer);
+    } else if (state == ApplicationState::PLAYBACK){
+        audioMemory.playBack(audioBuffer);
+    } else if (state == ApplicationState::PAUSE){
+        audioMemory.resetMemoryIndex();
     }
 }
 
