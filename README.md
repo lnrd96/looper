@@ -1,9 +1,16 @@
 # Looper
 > A simple looper pedal as VST plugin.
 
-If you want to contribute check out the [wiki](https://github.com/lnrd96/looper/wiki) for techniqual documentation and hints.
 
-# Download
+# Demo
+Here will be a link to a YouTube video showing the app in usage.
+
+# Download & Install
+Here will be links to compiled executibles stored in this repository.
+
+# Contributing
+Here will be the link to the Wiki Page, which is relevant for contributers and where they are welcome and hooked.
+If you want to contribute check out the [wiki](https://github.com/lnrd96/looper/wiki) for techniqual documentation and hints.
 
 ## Outline
 - [Project Vision and Mission 🚀](#project-vision-and-mission)
@@ -11,8 +18,7 @@ If you want to contribute check out the [wiki](https://github.com/lnrd96/looper/
   - [Mission](#mission)
 - [Technologies](#technologies)
 - [Roadmap 🏁](#roadmap)
-- [Future Features for Free Version💡](#future-features-for-free-version)
-- [Future Features for Paid Version💡](#future-features-for-paid-version)
+- [Future Features 💡](#future-features-for-simple-version)
 - [License](#license)
 - [Credits](#credits)
 
@@ -54,21 +60,25 @@ To get to the first stable version where a MIDI command to control the plugin ca
 - [x] Looping can be performed
 - [ ] Smooth transition between loop end and beginning
 
-## Future Features for free version
+## Future Features for simple version
 - A good looking UI
+- Ability to undo last loop
+- Possibility to tell the BPM of the looo s.t. the duration is adapted to be in time according to it
 
-## Future Features for paid version
-- Audio export
-- Undo Last Loop 
-- Ability to mix loudness of layers selectively
-- Ability to remove a layer selectively
-- BPM detection, also tell the BPM to the host DAW
-  - Such that the other plugins the user uses can adapt to it, e.g. Delay
-- Smart adaption of loop cycle using beat detection
+## Future Features for smart version
+- Record every layer individually instead of overdubbing the audio memory
+  - Such that every layer's loudness can be adjusted
+  - Such that every layer can be muted individually
+  - Such that a layer can be removed
+- BPM detection
+  - Such that the host DAW can adapt to the BPM
+- Smart adaption of loop cycle
   - Such that the app automatically fixes the timing if the user did not set the loop perfectly
+  - depends on BPM detection
 
 ## License
 TODO
 
 ## Credits
 The cmake build environment is based on the [prototype repository](https://github.com/eyalamirmusic/JUCECmakeRepoPrototype) by [eyalamirmusic](https://github.com/eyalamirmusic/JUCECmakeRepoPrototype/commits?author=eyalamirmusic).
+Looking forward to list all contributors here.
