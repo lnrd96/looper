@@ -17,9 +17,9 @@ PluginProcessor::PluginProcessor() : looperProcessor(getTotalNumInputChannels())
     #if ENABLE_LOGGING
         juce::Time currentTime = juce::Time::getCurrentTime();
         juce::String timestamp = currentTime.toString(true, true); // Format: YYYY-MM-DD HH:mm:ss
-        juce::String logFileName = juce::String(LOG_DIRECTORY) + juce::String("/pluginLog_") + timestamp + juce::String(".txt");
+        juce::String logFileName = juce::String(LOG_DIRECTORY) + juce::String("/Log_") + timestamp + juce::String(".txt");
         juce::File logFile(logFileName);
-        juce::Logger::setCurrentLogger (new juce::FileLogger (logFile, "Your Plugin Logs", 10000));
+        juce::Logger::setCurrentLogger (new juce::FileLogger (logFile, "Looper plugin loaded!", 10000));
     #else
         juce::Logger::setCurrentLogger(nullptr);
     #endif
@@ -38,13 +38,13 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     if (bufferSize == -1) {  // first run
         // buffer size & samplerate is only guaranteed to be correctly obtained from within this method
         bufferSize = getBlockSize();
-        sampleRate = getSampleRate();
+        sampleRate = (int)getSampleRate();
         // -> forward info to audioMemory via looperProcessor
         looperProcessor.forwardAudioDeviceInfoToAudioMemory(bufferSize, sampleRate);
     } else if (bufferSize != getBlockSize() || sampleRate != getSampleRate()) {
-        throw std::runtime_error("The Plugin does currently not support block size changes or samplerate changes during runtime.");
-        // TODO: Reinitialize audioMemory as quick fix?
-        // audioMemory will have to adapt to such changes
+        looperProcessor.setApplicationState(ApplicationState::INIT);
+        // at least ext config change does not crash daw anymore, but
+        // TODO: in buffer size other than state change detection does not work anymore
     }
     
     // delegate audio processing to LooperProcessor class by passing the reference
@@ -89,8 +89,16 @@ void PluginProcessor::setStateInformation(const void* data, int sizeInBytes) {
 juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout()
 {
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain", "Gain", 0.f, 1.f, 1.0f)); // TODO one should set parameter version for Logic and Garageband
-    params.push_back(std::make_unique<juce::AudioParameterBool>("Footstep Trigger", "Footstep Trigger", false));
+
+    params.push_back(std::make_unique<juce::AudioParameterFloat>(
+        juce::ParameterID{"Gain", 1}, "Gain", 0.f, 1.f, 1.0f));
+    
+    params.push_back(std::make_unique<juce::AudioParameterChoice>(
+        juce::ParameterID{"Footstep Trigger", 1},
+        "Footstep Trigger",
+        juce::StringArray{ "Off", "On" },
+        0 // default
+    ));
 
     return { params.begin(), params.end() };
 }

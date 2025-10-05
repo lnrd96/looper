@@ -80,11 +80,9 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 void PluginEditor::buttonClicked(juce::Button* button) {
     if (button == &footstepTrigger) {
         auto* param = pluginProcessor.apvts.getParameter("Footstep Trigger");
-        // Toggle the parameter value
-        param->setValueNotifyingHost(param->getValue() == 0.0f ? 1.0f : 0.0f);
+        auto currentValue = param->getValue();
+        param->setValueNotifyingHost(currentValue < 0.5f ? 1.0f : 0.0f);  // toggle
     }
-    //     pluginProcessor.looperProcessor.detectApplicationState();
-    // }
 }
 
 PluginEditor::~PluginEditor()

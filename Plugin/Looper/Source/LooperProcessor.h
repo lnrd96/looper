@@ -11,6 +11,7 @@ public:
     explicit LooperProcessor(int nChannels);
     void detectApplicationState();
     ApplicationState getApplicationState();
+    void setApplicationState(ApplicationState newState);
     void processAudio(juce::AudioBuffer<float>& audioBuffer);
     void addStateChangeListener(StateChangeListener* listener);
     void removeStateChangeListener(StateChangeListener* listener);

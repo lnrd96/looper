@@ -67,6 +67,11 @@ ApplicationState LooperProcessor::getApplicationState() {
     return state;
 }
 
+void LooperProcessor::setApplicationState(ApplicationState newState) {
+    state = newState;
+    notifyStateChange();
+}
+
 void LooperProcessor::addStateChangeListener(StateChangeListener* listener) {
     listeners.add(listener);
 }

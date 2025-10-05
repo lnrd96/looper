@@ -24,8 +24,17 @@ void AudioMemory::recordOrOverdub(juce::AudioBuffer<float>& audioBuffer){
         this->memory.push_back(std::move(newBuffer));
         this->incrementMemoryIndex();
     } else if (!isFirstLoop) {
+        if (memory.empty()) {
+            DBG("Warning: Tried to overdub but memory is empty.");
+            return;
+        }
+
         // overdubbing -> combine buffers
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
+        if (memoryBufferP == nullptr) {
+            DBG("Warning: memoryBufferP is null.");
+            return;
+        }
         for (int channel = 0; channel < nChannels; ++channel) {
             // add memory to current buffer -> audioBuffer becomes the combined buffer 
             audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);
@@ -46,7 +55,7 @@ void AudioMemory::playBack(juce::AudioBuffer<float>& audioBuffer){
         juce::AudioBuffer<float>* memoryBufferP = getBufferPointerFromMemory();
         // add memory to current buffer -> audioBuffer becomes the combined buffer 
         for (int channel = 0; channel < nChannels; ++channel) {
-            audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);  // TODO: overflow-add?
+            audioBuffer.addFrom(channel, 0, *memoryBufferP, channel, 0, bufferSize);
         }
         this->incrementMemoryIndex();
     } else {
