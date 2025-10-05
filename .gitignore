@@ -1,9 +1,9 @@
 *.user
 .prettierrc
 
-Plugin/Logfiles/*
 
 SDKs
+Plugin/Logfiles
 
 build
 *build*
@@ -22,7 +22,6 @@ IDEWorkspaceChecks.plist
 UserInterfaceState.xcuserstate
 xcschememanagement.plist
 *.xcscheme
-.vscode
 .history
 *.code-workspace
 *.xcworkspace
