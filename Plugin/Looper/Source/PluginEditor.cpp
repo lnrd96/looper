@@ -30,6 +30,12 @@ PluginEditor::PluginEditor(PluginProcessor& p)
     footstepTrigger.addListener(this);
     addAndMakeVisible(footstepTrigger);
 
+    // reset button
+    resetButton.setButtonText("Reset Loop");
+    resetButton.addListener(this);
+    addAndMakeVisible(resetButton);
+
+
     // register for notification on state change 
     p.looperProcessor.addStateChangeListener(this);
 
@@ -45,6 +51,8 @@ void PluginEditor::resized()
     editor.setBounds(getLocalBounds());
     statusLabel.setBounds(200 - 15, 200, getWidth() - 20, 30);
     footstepTrigger.setBounds(200 - 75, 100, 150, 30); // x, y, width, height
+    resetButton.setBounds(200 - 75, 140, 150, 30);  // Adjust position below or beside
+
 }
 
 void PluginEditor::handleAsyncUpdate()
@@ -77,11 +85,15 @@ void PluginEditor::displayApplicationState(ApplicationState state) {
 
 }
 
+// buttonClicked() is part of the juce::Button::Listener interface.
+// is called for all buttons registered with addListener(this)
 void PluginEditor::buttonClicked(juce::Button* button) {
     if (button == &footstepTrigger) {
         auto* param = pluginProcessor.apvts.getParameter("Footstep Trigger");
         auto currentValue = param->getValue();
         param->setValueNotifyingHost(currentValue < 0.5f ? 1.0f : 0.0f);  // toggle
+    } else if (button == &resetButton) {
+        pluginProcessor.looperProcessor.setApplicationState(ApplicationState::INIT);
     }
 }
 

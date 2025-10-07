@@ -13,6 +13,7 @@ public:
     void stateChanged(ApplicationState newState) override;
     void handleAsyncUpdate() override;
     juce::TextButton footstepTrigger;
+    juce::TextButton resetButton;
     void buttonClicked(juce::Button* button) override;
 
 

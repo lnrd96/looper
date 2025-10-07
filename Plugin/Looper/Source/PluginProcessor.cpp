@@ -54,11 +54,16 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& audioBuffer,
     audioBuffer.applyGain(gainValue);
 }
 
+// when triggered via MIDI not via UI
 void PluginProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
     if (parameterID == "Footstep Trigger")
     {
         looperProcessor.detectApplicationState();
+    }
+    if (parameterID == "Reset Trigger")
+    {
+        looperProcessor.setApplicationState(ApplicationState::INIT);
     }
 }
 
@@ -99,6 +104,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
         juce::StringArray{ "Off", "On" },
         0 // default
     ));
+    params.push_back(std::make_unique<juce::AudioParameterChoice>(
+        juce::ParameterID{"Reset Trigger", 1},
+        "Reset Trigger",
+        juce::StringArray{ "Off", "On" },
+        0 // default
+    ));
+
 
     return { params.begin(), params.end() };
 }

@@ -31,17 +31,14 @@ real world counter parts. The same holds for keyboard players as the digital app
 
 [Looping](https://youtu.be/oc0yCiCvy6Y?t=144) is often used as a creative tool in music production, allowing a musician to build up layers of sound and create complex compositions by layering loops on top of each other. It can be used live, in performance, to create a backing track or to improvise over a repeating groove.
 
-This PlugIn offers a simple approach to looping by implementing the common behaviour of an analog looper pedal. It is controllab using one single oot step or other MIDI buttons.
+Some DAWs offer complex and proprietary approaches to looping. This PlugIn offers a simple and universal approach to looping by implementing the common behaviour of an analog looper pedal. It is controllab using one single single command, e.g. assigned to a footstep.
 
-The vision of this plugin is to provide a universally applicable looper VST plugin that can be
-used straight forward. 
-
-The Plugin can be placed on the master channel of the DAW of choice such that any performances - whether it is vocals, drums, guitar or keys - is captured.
+The Plugin is straight forward and can be placed on the master channel of a DAW such that any performance - whether it is vocals, drums, guitar or keys - is captured.
 
 ### Mission
 
 ## Usage
-To realize the key point, simple usage, one can operate using only one button. One performs simple patterns with it. For instance pressing once starts recording, pressing twice pauses and pressing three times resets the recorded audio. Also the software architecture foolows the KISS approach while being open for extensions. Check out the Wiki documentation on the software architecture.
+To realize the key point, simple usage, one can operate using only one button. One performs simple patterns with it. For instance pressing once starts recording, pressing twice pauses and pressing three times resets the recorded audio. 
 
 ## Technologies
 To simplify the development and deployment the [JUCE](https://juce.com/) framework is used.
@@ -60,12 +57,10 @@ To get to the first stable version where a MIDI command to control the plugin ca
 - [x] Looping can be performed
 - [ ] Smooth transition between loop end and beginning
 
-## Future Features for simple version
+## Future Features
 - A good looking UI
 - Ability to undo last loop
 - Possibility to tell the BPM of the looo s.t. the duration is adapted to be in time according to it
-
-## Future Features for smart version
 - Record every layer individually instead of overdubbing the audio memory
   - Such that every layer's loudness can be adjusted
   - Such that every layer can be muted individually
@@ -73,6 +68,13 @@ To get to the first stable version where a MIDI command to control the plugin ca
 - BPM detection
   - Such that the host DAW can adapt to the BPM
 - Smart adaption of loop cycle
+- Audio export
+- Undo Last Loop 
+- Ability to mix loudness of layers selectively
+- Ability to remove a layer selectively
+- BPM detection, also tell the BPM to the host DAW
+  - Such that the other plugins the user uses can adapt to it, e.g. Delay
+- Smart adaption of loop cycle using beat detection
   - Such that the app automatically fixes the timing if the user did not set the loop perfectly
   - depends on BPM detection
 
